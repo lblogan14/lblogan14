@@ -1,4 +1,7 @@
-### Hi there 👋
+### WELCOME 👋
+I am a full-time deep learning scientist focusing on computer vision and generative modeling. FYI, I'm also a sneakerhead and love designing new colorways with my expertise in generative computer vision algorithms.
+
+
 
 <!--
 **lblogan14/lblogan14** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
