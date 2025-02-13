@@ -1,5 +1,6 @@
 ### WELCOME 👋
-I am a full-time deep learning scientist focusing on computer vision and generative modeling. FYI, I'm also a sneakerhead and love designing new colorways with my expertise in generative computer vision algorithms.
+I am a full-time deep learning scientist/practitioner focusing on generative modeling. 
+FYI, I'm also a sneakerhead and love designing new colorways with my expertise in generative computer vision algorithms.
 
 
 
