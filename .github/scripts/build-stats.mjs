@@ -190,6 +190,9 @@ const lastYear = days
   .filter((d) => d.date >= cutoffISO)
   .reduce((n, d) => n + d.count, 0);
 
+// Is the longest streak the one currently running?
+const onBestRun = current > 0 && current === longest;
+
 const allRepos = user.allRepos.totalCount;
 const publicRepos = user.publicRepos.totalCount;
 const privateRepos = allRepos - publicRepos;
@@ -225,8 +228,14 @@ const tiles = [
   },
   {
     big: String(longest),
-    label: "LONGEST STREAK",
-    sub: longestRange ? `${pretty(longestRange[0])} — ${pretty(longestRange[1])}`.toUpperCase() : "DAYS",
+    // When the best run is the one still going, say so — a live number beats a
+    // historical one, and that is the whole point of rebuilding this nightly.
+    label: onBestRun ? "STREAK — ONGOING" : "LONGEST STREAK",
+    sub: longestRange
+      ? (onBestRun
+          ? `SINCE ${pretty(longestRange[0])}`.toUpperCase()
+          : `${pretty(longestRange[0])} — ${pretty(longestRange[1])}`.toUpperCase())
+      : "DAYS",
   },
   {
     big: String(allRepos),
