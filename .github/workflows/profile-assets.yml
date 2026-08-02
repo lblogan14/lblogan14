@@ -29,6 +29,10 @@ jobs:
 
       - name: Render stats strip
         env:
+          # PROFILE_TOKEN is optional: a classic PAT with `repo` + `read:user`
+          # adds private repos and private contributions. If it is absent or
+          # expired the script falls back to GITHUB_TOKEN (public data only).
+          PROFILE_TOKEN: ${{ secrets.PROFILE_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LOGIN: ${{ github.repository_owner }}
         run: node .github/scripts/build-stats.mjs
