@@ -179,7 +179,16 @@ const { days, restricted } = await allContributionDays(user.createdAt);
 
 const total = days.reduce((n, d) => n + d.count, 0);
 const { longest, longestRange, current, currentRange } = streaks(days);
-const since = pretty(days[0]?.date ?? user.createdAt.slice(0, 10));
+const since = (days[0]?.date ?? user.createdAt).slice(0, 4);
+
+// Rolling 365 days — the same window GitHub's own profile graph uses, so the
+// strip is directly comparable to the graph sitting right below it.
+const cutoff = new Date();
+cutoff.setUTCDate(cutoff.getUTCDate() - 364);
+const cutoffISO = cutoff.toISOString().slice(0, 10);
+const lastYear = days
+  .filter((d) => d.date >= cutoffISO)
+  .reduce((n, d) => n + d.count, 0);
 
 const allRepos = user.allRepos.totalCount;
 const publicRepos = user.publicRepos.totalCount;
@@ -189,24 +198,30 @@ const seesPrivate = privateRepos > 0;
 // `restricted` counts private contributions the token is NOT allowed to itemise.
 // They are already inside totalContributions, so never add them on top.
 console.log(
-  `stats: ${total} contributions (${restricted} restricted), ` +
-  `current ${current}, longest ${longest}, ` +
+  `stats: ${total} all-time, ${lastYear} last 365d, ` +
+  `current streak ${current}, longest ${longest}, ` +
   `${allRepos} repos (${publicRepos} public / ${privateRepos} private)`
 );
 if (!seesPrivate) {
-  console.log("note: token sees public repos only — set PROFILE_TOKEN for private.");
+  console.log("note: token cannot see private repos — add PROFILE_TOKEN (classic PAT, `repo` scope).");
+}
+if (restricted === 0 && privateRepos > 0) {
+  console.log(
+    "note: private CONTRIBUTIONS look excluded. A token cannot fix this on its own — " +
+    "enable Settings > Public profile > 'Include private contributions on my profile'."
+  );
 }
 
 const tiles = [
   {
     big: total.toLocaleString("en-US"),
     label: "CONTRIBUTIONS",
-    sub: seesPrivate ? `SINCE ${since.toUpperCase()} · INCL. PRIVATE` : `SINCE ${since.toUpperCase()}`,
+    sub: `ALL TIME · SINCE ${since}`,
   },
   {
-    big: String(current),
-    label: "CURRENT STREAK",
-    sub: currentRange ? `${pretty(currentRange[0])} —`.toUpperCase() : "DAYS",
+    big: lastYear.toLocaleString("en-US"),
+    label: "LAST 12 MONTHS",
+    sub: "ROLLING 365 DAYS",
   },
   {
     big: String(longest),
